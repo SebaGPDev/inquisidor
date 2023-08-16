@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { encode } from 'base-64';
 
-// Crea un thunk para realizar la petición de inicio de sesión
+// Acción para realizar el inicio de sesión
 export const loginAsync = createAsyncThunk('auth/loginAsync', async (data, { rejectWithValue }) => {
   try {
     const config = {
@@ -15,11 +16,16 @@ export const loginAsync = createAsyncThunk('auth/loginAsync', async (data, { rej
       data,
       config
     );
-
     return response.data.entry.id;
   } catch (error) {
     return rejectWithValue(error.message);
   }
+});
+
+// Acción para realizar el logout
+export const logout = createAsyncThunk('auth/logout', async (_, { getState }) => {
+  const state = getState();
+  state.auth.ticket = null;
 });
 
 const authSlice = createSlice({
@@ -38,11 +44,16 @@ const authSlice = createSlice({
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.ticket = action.payload;
+        const ticketId = action.payload;
+        const base64Ticket = encode(ticketId);
+        state.ticket = base64Ticket;
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.ticket = null;
       });
   },
 });
