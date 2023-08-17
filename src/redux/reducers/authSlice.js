@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { encode } from 'base-64';
+import { makePostRequest } from '../../services/Authenticate'; // Importa la función utilitaria
 
 // Acción para realizar el inicio de sesión
 export const loginAsync = createAsyncThunk('auth/loginAsync', async (data, { rejectWithValue }) => {
@@ -11,12 +11,14 @@ export const loginAsync = createAsyncThunk('auth/loginAsync', async (data, { rej
       },
     };
 
-    const response = await axios.post(
-      'http://192.168.217.123:8080/alfresco/api/-default-/public/authentication/versions/1/tickets',
+    // Utiliza la función de solicitud reutilizable
+    const response = await makePostRequest(
+      'http://192.168.217.253:8080/alfresco/api/-default-/public/authentication/versions/1/tickets',
       data,
       config
     );
-    return response.data.entry.id;
+
+    return response.entry.id;
   } catch (error) {
     return rejectWithValue(error.message);
   }

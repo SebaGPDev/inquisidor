@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TextInput, Text, Pressable, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Text,
+  Pressable,
+  Alert,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { loginAsync } from '../../redux/reducers/authSlice'; // Importa el thunk de autenticación
+import { loginAsync } from "../../redux/reducers/authSlice"; // Importa el thunk de autenticación
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
